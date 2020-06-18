@@ -1,12 +1,15 @@
 
 #include <opencv2/opencv.hpp>
+
 #include <iostream>
+#include <sstream>
 
 #include <stdio.h>
 #include <string>
 #include <time.h>
 
 #include "serialcomm.h"
+#include "NtKinect.h"
 
 
 
@@ -19,6 +22,29 @@ int color;
 int colortmp;
 
 char matArr_1[16][16];
+
+void doJob() {
+	NtKinect kinect;
+	while (1) {
+		kinect.setDepth(false);
+		cv::imshow("depth", kinect.depthImage);
+		auto key = cv::waitKey(1);
+		if (key == 'q') break;
+	}
+	cv::destroyAllWindows();
+}
+
+int main(int argc, char** argv) {
+	try {
+		doJob();
+	}
+	catch (exception &ex) {
+		cout << ex.what() << endl;
+		string s;
+		cin >> s;
+	}
+	return 0;
+}
 
 void connSeria() {
 
@@ -40,13 +66,13 @@ void detColor() {
 	if (colortmp < 51) {
 		color = 49;
 	}
-	else if (colortmp < 102 && colortmp < 50) {
+	else if (colortmp < 102 && colortmp > 50) {
 		color = 50;
 	}
-	else if (colortmp < 153 && colortmp < 101) {
+	else if (colortmp < 153 && colortmp > 101) {
 		color = 51;
 	}
-	else if (colortmp < 204 && colortmp < 152) {
+	else if (colortmp < 204 && colortmp > 152) {
 		color = 52;
 	}
 	else {
@@ -98,7 +124,7 @@ void colorExtract() {
 
 
 
-
+/*
 int main()
 {
 
@@ -108,7 +134,7 @@ int main()
 	CSerialComm serialComm; //SerialComm 객체 생성
 
 
-	if (!serialComm.connect("COM4")) //COM25번의 포트를 오픈한다. 실패할 경우 -1을 반환한다.
+	if (!serialComm.connect("COM5")) //COM25번의 포트를 오픈한다. 실패할 경우 -1을 반환한다.
 	{
 		cout << "connect faliled" << endl;
 		return -1;
@@ -128,10 +154,10 @@ int main()
 
 			
 			buffer = matArr_1[x][y];
-			//serialComm.sendCommand('\n');
+			serialComm.sendCommand('\n');
 			//printf("%c", buffer);
-			delay(50);
 			
+			delay(10);
 			
 			if (!serialComm.sendCommand(buffer))
 			{
@@ -157,6 +183,6 @@ int main()
 }
 
 
-
+*/
 
 
