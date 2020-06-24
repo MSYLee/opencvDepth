@@ -18,7 +18,24 @@ int pixel;
 int color;
 int colortmp;
 
-char matArr_1[16][16];
+int matArr_1[16][16] = {
+  {50, 50, 50, 50, 50, 50, 50, 51, 51, 50, 50, 50, 50, 50, 50, 50},
+  {50, 50, 50, 50, 50, 50, 51, 49, 49, 51, 50, 50, 50, 50, 50, 50},
+  {50, 50, 50, 50, 50, 50, 51, 49, 49, 51, 50, 50, 50, 50, 50, 50},
+  {50, 50, 50, 50, 50, 51, 49, 49, 49, 49, 51, 50, 50, 50, 50, 50},
+  {51, 51, 51, 51, 51, 51, 49, 49, 49, 49, 51, 51, 51, 51, 51, 51},
+  {51, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 51},
+  {51, 51, 49, 49, 49, 51, 51, 49, 49, 51, 51, 49, 49, 49, 51, 51},
+  {50, 50, 51, 49, 49, 51, 51, 49, 49, 51, 51, 49, 49, 51, 50, 50},
+  {50, 50, 50, 51, 49, 51, 51, 49, 49, 51, 51, 49, 51, 50, 50, 50},
+  {50, 50, 50, 51, 49, 51, 51, 49, 49, 51, 51, 49, 51, 50, 50, 50},
+  {50, 50, 51, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 51, 50, 50},
+  {50, 50, 51, 49, 49, 49, 49, 49, 49, 49, 49, 49, 49, 51, 50, 50},
+  {50, 51, 49, 49, 49, 49, 49, 51, 51, 49, 49, 49, 49, 49, 51, 50},
+  {51, 51, 49, 49, 49, 51, 51, 50, 50, 51, 51, 49, 49, 49, 51, 51},
+  {51, 49, 49, 51, 51, 50, 50, 50, 50, 50, 50, 51, 51, 49, 49, 51},
+  {51, 51, 51, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 51, 51, 51}
+};
 
 void connSeria() {
 
@@ -102,13 +119,14 @@ void colorExtract() {
 int main()
 {
 
-	colorExtract();
+	//colorExtract();
 
 	char buffer;
+	int tmp;
 	CSerialComm serialComm; //SerialComm 객체 생성
 
 
-	if (!serialComm.connect("COM4")) //COM25번의 포트를 오픈한다. 실패할 경우 -1을 반환한다.
+	if (!serialComm.connect("COM6")) //COM25번의 포트를 오픈한다. 실패할 경우 -1을 반환한다.
 	{
 		cout << "connect faliled" << endl;
 		return -1;
@@ -121,18 +139,28 @@ int main()
 
 
 
-	for (int y = 0; y < 16; y++) {
-		serialComm.sendCommand('\n');
+
+	
+	serialComm.sendCommand('O');
+	serialComm.sendCommand('K');
+	serialComm.sendCommand('D');
+	serialComm.sendCommand('O');
+	delay(10);
+
+	for (int x= 0; x < 16; x++) {
+		
 		//printf("\n");
-		for (int x = 0; x < 16; x++) {
+		for (int y = 0; y < 16; y++) {
 
 			
 			buffer = matArr_1[x][y];
-			//serialComm.sendCommand('\n');
+			serialComm.sendCommand('C');
+			serialComm.sendCommand(buffer);
+			
 			//printf("%c", buffer);
-			delay(50);
+			//delay(3);
 			
-			
+			/*
 			if (!serialComm.sendCommand(buffer))
 			{
 				cout << "send command failed" << endl;
@@ -140,7 +168,8 @@ int main()
 			else
 				
 				cout << "send Command success" << endl;
-			
+			    serialComm.sendCommand('\n');
+		*/
 		}
 	}
 
