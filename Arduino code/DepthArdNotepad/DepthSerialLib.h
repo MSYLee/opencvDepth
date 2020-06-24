@@ -7,7 +7,7 @@ char cominData;
 char cominChar;
 String comINinit = "";
 String comString = "";
-int modetmp = 0;
+int modetmp = 1;
 
 
 //시리얼 초기화 테스트 변수
@@ -18,18 +18,7 @@ String initString = "";
 
 
 
-void SessionTest() {
 
-
-  while (Serial.available() > 0) {
-    if (Serial.find("OK")) {
-      modetmp = 1;
-      Serial.println("READY");
-    }
-  }
-
-
-}
 
 
 void readdata() {
@@ -38,7 +27,7 @@ void readdata() {
   while (Serial.available() > 0) {
     if (Serial.find("DO")) {
       modetmp = 2;
-      Serial.println("START");
+      //Serial.println("START");
     }
   }
 
