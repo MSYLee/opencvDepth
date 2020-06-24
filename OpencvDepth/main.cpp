@@ -1,11 +1,15 @@
 
 #include <opencv2/opencv.hpp>
+#include "opencv2/imgproc/imgproc.hpp"
+#include "opencv2/highgui/highgui.hpp"
 
 #include <iostream>
 #include <sstream>
 
 #include <stdio.h>
 #include <string>
+#include <fstream>
+
 #include <time.h>
 
 #include "serialcomm.h"
@@ -17,34 +21,37 @@
 using namespace cv;
 using namespace std;
 
+Mat DIG, DIG2;
+//Mat frame;
+
+uchar* pData;
+int height = 0;
+int width = 0;
+
 int pixel;
 int color;
 int colortmp;
 
+int rep = 0;
+
 char matArr_1[16][16];
 
-void doJob() {
+
+/*
+void doJob2() {
 	NtKinect kinect;
 	while (1) {
 		kinect.setDepth(false);
-		cv::imshow("depth", kinect.depthImage);
+		DIG = kinect.depthImage;
+		cv::imshow("Depth", DIG);
+		//cv::imshow("depth", kinect.depthImage);
 		auto key = cv::waitKey(1);
 		if (key == 'q') break;
 	}
 	cv::destroyAllWindows();
 }
+*/
 
-int main(int argc, char** argv) {
-	try {
-		doJob();
-	}
-	catch (exception &ex) {
-		cout << ex.what() << endl;
-		string s;
-		cin >> s;
-	}
-	return 0;
-}
 
 void connSeria() {
 
@@ -94,47 +101,45 @@ void extColor() {
 	}
 }
 void colorExtract() {
+	height = DIG2.rows;
+	width = DIG2.cols;
 
-	Mat img_color = imread("Image.png", IMREAD_COLOR);
-
-	int height = img_color.rows;
-	int width = img_color.cols;
-
-	uchar* data = img_color.data;
-
+	cout << "Start" << endl;
 	for (int y = 0; y < height; y++) {
+		cout << "Y is = " << endl;
+		cout << y << endl;
+
 		//printf("\n");
 		for (int x = 0; x < width; x++) {
 
 			colortmp = 0;
-			pixel = data[y * width * 3 + x * 3];
+			pixel = pData[y * width * 3 + x * 3];
 			colortmp = pixel;
 			detColor();
 			matArr_1[x][y] = color;
 
 
 			//printf("%d", matArr_1[x][y]);
-
-			//cout << b << endl;
-
+			
+			cout << "x is = " << endl;
+			cout << x << endl;
+			cout << matArr_1[x][y] << endl;
 		}
 	}
-
+	cout << "End" << endl;
 }
 
 
 
-/*
-int main()
-{
 
-	colorExtract();
+int serialConnect()
+{
 
 	char buffer;
 	CSerialComm serialComm; //SerialComm 객체 생성
 
 
-	if (!serialComm.connect("COM5")) //COM25번의 포트를 오픈한다. 실패할 경우 -1을 반환한다.
+	if (!serialComm.connect("COM6")) //COM25번의 포트를 오픈한다. 실패할 경우 -1을 반환한다.
 	{
 		cout << "connect faliled" << endl;
 		return -1;
@@ -147,33 +152,35 @@ int main()
 
 
 
-	for (int y = 0; y < 16; y++) {
+	for (int y = 0; y < height; y++) {
 		serialComm.sendCommand('\n');
 		//printf("\n");
-		for (int x = 0; x < 16; x++) {
+		for (int x = 0; x < width; x++) {
 
-			
+
 			buffer = matArr_1[x][y];
 			serialComm.sendCommand('\n');
 			//printf("%c", buffer);
-			
+
 			delay(10);
-			
+
 			if (!serialComm.sendCommand(buffer))
 			{
 				cout << "send command failed" << endl;
 			}
 			else
-				
+
 				cout << "send Command success" << endl;
-			
+
+			//rep = 1;
+
 		}
 	}
 
 
 
 
-	serialComm.disconnect(); //작업이 끝나면 포트를 닫는다
+	//serialComm.disconnect(); //작업이 끝나면 포트를 닫는다
 
 	//cout << "end connect" << endl;
 	return 0;
@@ -183,6 +190,59 @@ int main()
 }
 
 
-*/
+void doJob() {
+
+	NtKinect kinect;
+
+	while (1) {
+
+		kinect.setDepth(false);
+		DIG = kinect.depthImage;
+		//cv::imshow("Depth", DIG);
+
+		cv::rectangle(DIG, cv::Point(140, 96), cv::Point(372, 328), cv::Scalar(255, 0, 0), 3, 1, 0);
+		imshow("Point", DIG);
+
+		Rect rect(140, 96, 200, 200);
+		DIG2 = DIG(rect);
+		resize(DIG, DIG2, Size(16, 16));
+
+		imshow("NEW", DIG2);
+
+		pData = DIG2.data;
+
+		colorExtract();
+		int i = 0;
+
+		serialConnect();
+		
+
+		i++;
+		//delay(10000);
+
+		//cout << width << endl;
+		//cout << height << endl;
 
 
+
+		auto key = cv::waitKey(1);
+		if (key == 'q') break;
+	}
+
+
+	//kinect.depthImage >> DIG;
+}
+
+
+int main(int argc, char** argv) {
+
+	try {
+		doJob();
+	}
+	catch (exception &ex) {
+		cout << ex.what() << endl;
+		string s;
+		cin >> s;
+	}
+	return 0;
+}

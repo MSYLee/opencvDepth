@@ -51,6 +51,7 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <fstream>
 #include <vector>
 #include <opencv2/opencv.hpp>
 #include <atlbase.h>
