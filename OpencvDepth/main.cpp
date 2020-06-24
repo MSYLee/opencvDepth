@@ -24,6 +24,8 @@ using namespace std;
 Mat DIG, DIG2;
 //Mat frame;
 
+char buffer;
+
 uchar* pData;
 int height = 0;
 int width = 0;
@@ -35,6 +37,12 @@ int colortmp;
 int rep = 0;
 
 char matArr_1[16][16];
+char matArr_2[16][16];
+char matArr_3[16][16];
+char matArr_4[16][16];
+char matArr[32][32];
+
+
 
 
 /*
@@ -88,8 +96,88 @@ void detColor() {
 
 }
 
+void singleMatrix() {
+
+	pData = DIG2.data;
+
+	height = DIG2.rows;
+	width = DIG2.cols;
+
+	for (int y = 0; y < height; y++) {
+
+		cout<<"\n"<<endl;
+		for (int x = 0; x < width; x++) {
+
+			colortmp = 0;
+			pixel = pData[y * width * 3 + x * 3];
+			colortmp = pixel;
+			detColor();
+			matArr_1[x][y] = color;
+
+			matArr[x][y] = matArr_1[x][y];
+
+			printf("%c", matArr[x][y]);
+
+		}
+	}
+}
+
+void multiMatrix() {
+
+	pData = DIG2.data;
+
+	height = DIG2.rows;
+	width = DIG2.cols;
+
+	for (int y = 0; y < height; y++) {
+		int i = 0;
+		int j = 0;
+
+		//printf("StartProgress\n");
+		printf("\n");
+		for (int x = 0; x < width; x++) {
+			//printf("\n");
+			
+			//printf("\n1st%d\n", i);
+			//printf("\nj is%d\n", j);
+			//i = i / j;
+			//printf("\n2nd%d\n", i);
+
+			if (i < 16) {
+				//printf("1St if\n");
+				colortmp = 0;
+				pixel = pData[y * width * 3 + x * 3];
+				colortmp = pixel;
+				detColor();
+				matArr[x][y] = color;
+				printf("%c", matArr[x][y]);
+				//printf("%d",i);
+			}
+			else if (i > 15) {
+				//printf("\n");
+
+				colortmp = 0;
+				pixel = pData[y * width * 3 + x * 3];
+				colortmp = pixel;
+				detColor();
+				matArr[x][y] = color;
+				printf(" %c", matArr[x][y]);
+				//printf(" %d", i);
+			}
+			else {
+				printf("Error!!");
+				printf("\n\nI is %d\n\n", i);
+			}
+
+			i++;
+
+		}
+	}
+
+}
 
 
+/*
 void extColor() {
 
 	for (int i = 0; i < 16; i++) {
@@ -100,16 +188,22 @@ void extColor() {
 		}
 	}
 }
+*/
+
 void colorExtract() {
+	pData = DIG2.data;
+
 	height = DIG2.rows;
 	width = DIG2.cols;
 
-	cout << "Start" << endl;
+	//cout << "Start" << endl;
 	for (int y = 0; y < height; y++) {
+		/*
 		cout << "Y is = " << endl;
 		cout << y << endl;
-
+		*/
 		//printf("\n");
+
 		for (int x = 0; x < width; x++) {
 
 			colortmp = 0;
@@ -120,10 +214,11 @@ void colorExtract() {
 
 
 			//printf("%d", matArr_1[x][y]);
-			
+			/*
 			cout << "x is = " << endl;
 			cout << x << endl;
 			cout << matArr_1[x][y] << endl;
+			*/
 		}
 	}
 	cout << "End" << endl;
@@ -134,8 +229,6 @@ void colorExtract() {
 
 int serialConnect()
 {
-
-	char buffer;
 	CSerialComm serialComm; //SerialComm °´Ã¼ »ý¼º
 
 
@@ -157,10 +250,10 @@ int serialConnect()
 		//printf("\n");
 		for (int x = 0; x < width; x++) {
 
-
-			buffer = matArr_1[x][y];
-			serialComm.sendCommand('\n');
-			//printf("%c", buffer);
+			buffer = matArr[x][y];
+			//serialComm.sendCommand('\n');
+			printf("%c", matArr[x][y]);
+			printf("%c", buffer);
 
 			delay(10);
 
@@ -185,10 +278,23 @@ int serialConnect()
 	//cout << "end connect" << endl;
 	return 0;
 
-
-
 }
 
+
+void jobTest() {
+	DIG2 = imread("Image32.png", IMREAD_COLOR);
+	if (DIG2.empty()) {
+		cout << "Cant read Image" << endl;
+	}
+	imshow("Shif77L", DIG2);
+
+	//singleMatrix();
+	multiMatrix();
+
+	//colorExtract();
+
+	//serialConnect();
+}
 
 void doJob() {
 
@@ -209,15 +315,10 @@ void doJob() {
 
 		imshow("NEW", DIG2);
 
-		pData = DIG2.data;
-
 		colorExtract();
-		int i = 0;
 
 		serialConnect();
 		
-
-		i++;
 		//delay(10000);
 
 		//cout << width << endl;
@@ -234,10 +335,18 @@ void doJob() {
 }
 
 
+
+int main() {
+	jobTest();
+}
+
+
+
+/*
 int main(int argc, char** argv) {
 
 	try {
-		doJob();
+		jobTest();
 	}
 	catch (exception &ex) {
 		cout << ex.what() << endl;
@@ -246,3 +355,4 @@ int main(int argc, char** argv) {
 	}
 	return 0;
 }
+*/
