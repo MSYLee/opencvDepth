@@ -162,7 +162,7 @@ int main()
 		
 
 	serialComm.sendCommand('D');
-	serialComm.sendCommand('O');
+	
 	delay(10);
 
 	for (int x= 0; x < 16; x++) {
@@ -182,7 +182,7 @@ int main()
 
 
 	serialComm.sendCommand('D');
-	serialComm.sendCommand('O');
+	
 	delay(10);
 
 	for (int x = 0; x < 16; x++) {
