@@ -162,42 +162,42 @@ int main()
 		
 
 	serialComm.sendCommand('D');
-	serialComm.sendCommand('O');
-	delay(10);
+	delay(2);
+	
 
 	for (int x= 0; x < 16; x++) {
-
+		serialComm.sendCommand('C');
 		for (int y = 0; y < 16; y++) {
 
 			
 			buffer = matArr_1[x][y];
-			serialComm.sendCommand('C');
+			
 			serialComm.sendCommand(buffer);
 			//delay(1);
 		}
 	}
 	  
 
-	delay(1000);
+
 
 
 	serialComm.sendCommand('D');
-	serialComm.sendCommand('O');
-	delay(10);
+	delay(2);
+	
 
 	for (int x = 0; x < 16; x++) {
-
+		serialComm.sendCommand('C');
 		for (int y = 0; y < 16; y++) {
 
 
 			buffer = matArr_2[x][y];
-			serialComm.sendCommand('C');
+			
 			serialComm.sendCommand(buffer);
 			//delay(1);
 		}
 	}
 
-	delay(1000);
+
 	}
 
 

@@ -7,7 +7,7 @@ char cominData;
 char cominChar;
 String comINinit = "";
 String comString = "";
-int modetmp = 1;
+int modetmp = 2;
 
 
 //시리얼 초기화 테스트 변수
