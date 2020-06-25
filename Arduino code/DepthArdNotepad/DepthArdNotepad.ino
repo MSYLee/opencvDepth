@@ -8,7 +8,7 @@
 Adafruit_NeoPixel pixel_1 = Adafruit_NeoPixel(LED_COUNT, PIN1, NEO_GRB + NEO_KHZ800);
 
 
-
+int tmpArr_1[16][16];
 int matArr_1[16][16];
 
 
@@ -19,7 +19,7 @@ int colortmp;
 void setup()  {
 
   Serial.begin(115200);
-  Serial.setTimeout(5);
+  Serial.setTimeout(10);
 
 
   pixel_1.begin();
@@ -38,64 +38,88 @@ void loop() {
 
 
   if (modetmp == 1) {
+
     readdata();
 
   }
   else if (modetmp == 2) {
+
     getData();
+    
   }
   else if (modetmp == 3) {
+      
     displayData();
   }
+
+  
 }
 
 
 
+
+
 void getData() {
+
+      
   pixel_1.clear();
   pixel_1.show();
   for (int x = 0; x < 16; ++x) {
     for (int y = 0; y < 16; ++y) {
       if (Serial.find("C")) {
-        matArr_1[x][y] = Serial.parseInt();
+        tmpArr_1[x][y] = Serial.parseInt();
+        matArr_1[x][y] = tmpArr_1[x][y];
+        //Serial.println("------ok-------");
       }
       else {
-        matArr_1[x][y] = 6;
+        tmpArr_1[x][y] = 6;
+        matArr_1[x][y] = tmpArr_1[x][y];
+       // Serial.println("------no-------");
       }
     }
   }
+
   modetmp = 3;
+
 }
 
 
 void displayData() {
+ 
 
+  numPixel = 0;
   for (int x = 0; x < 16; x++) {
     for (int y = 0; y < 16; y++) {
       colortmp = matArr_1[x][y];
-      if (colortmp == 1) {
-        pixel_1.setPixelColor(numPixel, pixel_1.Color(5, 5, 0));
+      colorDet();
+      numPixel++;
+     
+    }
+    
+  }
+  pixel_1.show();
+
+  modetmp = 1;
+  
+}
+
+void colorDet(){
+  if (colortmp == 1) {
+        pixel_1.setPixelColor(numPixel, 0, 0, 0);
        }
       else if (colortmp == 2) {
-        pixel_1.setPixelColor(numPixel, pixel_1.Color(0, 0, 0));
+        pixel_1.setPixelColor(numPixel, 1, 1, 1);
       }
       else if (colortmp == 3) {
-        pixel_1.setPixelColor(numPixel, pixel_1.Color(5, 5, 5));
+        pixel_1.setPixelColor(numPixel, 3, 3, 3);
       }
       else if (colortmp == 4) {
-        pixel_1.setPixelColor(numPixel, pixel_1.Color(5, 5, 0));
+        pixel_1.setPixelColor(numPixel, 5, 5, 5);
       }
       else if (colortmp == 6) {
-        pixel_1.setPixelColor(numPixel, pixel_1.Color(1, 1, 1));
+        pixel_1.setPixelColor(numPixel, 7, 7, 7);
       }
       else {
-        pixel_1.setPixelColor(numPixel, pixel_1.Color(5, 0, 0));
+        pixel_1.setPixelColor(numPixel, 9, 9, 9);
       }
-      numPixel++;
-    }
-    pixel_1.show();
-  }
-
-  numPixel = 0;
-  modetmp = 1;
 }
