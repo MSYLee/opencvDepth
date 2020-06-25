@@ -56,10 +56,6 @@ int matArr_2[16][16] = {
   {49, 49, 49, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 49, 49, 49}
 };
 
-void connSeria() {
-
-
-}
 
 void delay(clock_t n)
 
@@ -105,13 +101,33 @@ void extColor() {
 }
 void colorExtract() {
 
-	Mat img_color = imread("Image.png", IMREAD_COLOR);
+	Mat img_color;
+	Mat img_color2;
+	Mat image_32;
+	Mat imgGray, imgGray2;
+
+
+	//Rect rect(140, 96, 200, 200);
+
+	//cap.read(img_color2);
+	//imshow("Cap1", img_color2);
+
+	//img_color = img_color2(rect);
+
+	//cvtColor(img_color2, imgGray2, COLOR_BGR2GRAY);
+	resize(img_color2, img_color, Size(16, 16));
+	//resize(imgGray2, img_color, Size(16, 16));
+	//resize(img_color, image_32, Size(256, 256));
+
+	imshow("Cap", img_color);
+	//imshow("Cap", imgGray2);
+	//imshow("Cap32", image_32);
 
 	int height = img_color.rows;
 	int width = img_color.cols;
 
 	uchar* data = img_color.data;
-
+	/*
 	for (int y = 0; y < height; y++) {
 		//printf("\n");
 		for (int x = 0; x < width; x++) {
@@ -120,7 +136,7 @@ void colorExtract() {
 			pixel = data[y * width * 3 + x * 3];
 			colortmp = pixel;
 			detColor();
-			matArr_1[x][y] = color;
+			tmpArr[x][y] = color;
 
 
 			//printf("%d", matArr_1[x][y]);
@@ -128,8 +144,25 @@ void colorExtract() {
 			//cout << b << endl;
 
 		}
+
 	}
 
+	int z = 0;
+	for (int y = 1; y < 17; ++y) {
+		if (y % 2 != 0) {
+			for (int x = 0; x < 16; ++x) {
+				z = y - 1;
+				matArr_1[x][z] = tmpArr[x][z];
+			}
+		}
+		else {
+			for (int x = 15; x > -1; --x) {
+				z = y - 1;
+				matArr_1[x][z] = tmpArr[x][z];
+			}
+		}
+	}
+	*/
 }
 
 
@@ -138,14 +171,13 @@ void colorExtract() {
 int main()
 {
 
-	//colorExtract();
 
 	char buffer;
 	int tmp;
 	CSerialComm serialComm; //SerialComm 객체 생성
 
 
-	if (!serialComm.connect("COM6")) //COM25번의 포트를 오픈한다. 실패할 경우 -1을 반환한다.
+	if (!serialComm.connect("COM5")) //COM25번의 포트를 오픈한다. 실패할 경우 -1을 반환한다.
 	{
 		cout << "connect faliled" << endl;
 		return -1;
@@ -156,48 +188,29 @@ int main()
 
 
 
-	while(1){
+	while (1) {
+
+		//colorExtract();
 
 
-		
+		serialComm.sendCommand('D');
+		delay(10);
 
-	serialComm.sendCommand('D');
-	
-	delay(10);
+		for (int x = 0; x < 16; x++) {
 
-	for (int x= 0; x < 16; x++) {
+			for (int y = 0; y < 16; y++) {
 
-		for (int y = 0; y < 16; y++) {
 
-			
-			buffer = matArr_1[x][y];
-			serialComm.sendCommand('C');
-			serialComm.sendCommand(buffer);
-			//delay(1);
+				buffer = matArr_1[x][y];
+				serialComm.sendCommand('C');
+				serialComm.sendCommand(buffer);
+
+			}
 		}
-	}
-	  
+		delay(300);
+		if (waitKey(25) >= 0)
+			break;
 
-	delay(1000);
-
-
-	serialComm.sendCommand('D');
-	
-	delay(10);
-
-	for (int x = 0; x < 16; x++) {
-
-		for (int y = 0; y < 16; y++) {
-
-
-			buffer = matArr_2[x][y];
-			serialComm.sendCommand('C');
-			serialComm.sendCommand(buffer);
-			//delay(1);
-		}
-	}
-
-	delay(1000);
 	}
 
 
