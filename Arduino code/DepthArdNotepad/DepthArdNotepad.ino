@@ -53,7 +53,7 @@ void loop() {
 
 void getData() {
   pixel_1.clear();
-  pixel_1.show();
+ // pixel_1.show();
   for (int x = 0; x < 16; ++x) {
     for (int y = 0; y < 16; ++y) {
       if (Serial.find("C")) {
@@ -85,7 +85,7 @@ void displayData() {
       else if (colortmp == 4) {
         pixel_1.setPixelColor(numPixel, pixel_1.Color(5, 5, 0));
       }
-      else if (colortmp == 6) {
+      else if (colortmp == 5) {
         pixel_1.setPixelColor(numPixel, pixel_1.Color(1, 1, 1));
       }
       else {
@@ -97,5 +97,5 @@ void displayData() {
   }
 
   numPixel = 0;
-  modetmp = 1;
+  modetmp = 3;
 }

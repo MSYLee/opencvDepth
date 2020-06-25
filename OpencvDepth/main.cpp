@@ -18,7 +18,13 @@ int pixel;
 int color;
 int colortmp;
 
-int matArr_1[16][16] = {
+//VideoCapture cap(0);
+
+int tmpArr[16][16];
+
+int matArr_1[16][16];
+/*
+= {
   {50, 50, 50, 50, 50, 50, 50, 51, 51, 50, 50, 50, 50, 50, 50, 50},
   {50, 50, 50, 50, 50, 50, 51, 49, 49, 51, 50, 50, 50, 50, 50, 50},
   {50, 50, 50, 50, 50, 50, 51, 49, 49, 51, 50, 50, 50, 50, 50, 50},
@@ -36,7 +42,7 @@ int matArr_1[16][16] = {
   {51, 49, 49, 51, 51, 50, 50, 50, 50, 50, 50, 51, 51, 49, 49, 51},
   {51, 51, 51, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 51, 51, 51}
 };
-
+*/
 int matArr_2[16][16] = {
   {50, 50, 50, 50, 50, 50, 50, 49, 49, 50, 50, 50, 50, 50, 50, 50},
   {50, 50, 50, 50, 50, 50, 49, 50, 50, 49, 50, 50, 50, 50, 50, 50},
@@ -109,27 +115,30 @@ void colorExtract() {
 
 	//Rect rect(140, 96, 200, 200);
 
-	//cap.read(img_color2);
-	//imshow("Cap1", img_color2);
-
+	 //cap.read(img_color2);
+	img_color = imread("image.jpg");
+	imshow("Cap", img_color);
+	/*
 	//img_color = img_color2(rect);
 
-	//cvtColor(img_color2, imgGray2, COLOR_BGR2GRAY);
-	resize(img_color2, img_color, Size(16, 16));
-	//resize(imgGray2, img_color, Size(16, 16));
-	//resize(img_color, image_32, Size(256, 256));
+	cvtColor(img_color2, imgGray, COLOR_BGR2GRAY);
+	imgGray2 = imgGray * 2.0;
+	//resize(img_color2, img_color, Size(16, 16));
+	resize(imgGray2, img_color, Size(16, 16));
+	resize(img_color, image_32, Size(256, 256));
 
 	imshow("Cap", img_color);
 	//imshow("Cap", imgGray2);
-	//imshow("Cap32", image_32);
-
+	imshow("Cap32", image_32);
+	*/
 	int height = img_color.rows;
 	int width = img_color.cols;
 
 	uchar* data = img_color.data;
-	/*
+
 	for (int y = 0; y < height; y++) {
 		//printf("\n");
+		printf("\n");
 		for (int x = 0; x < width; x++) {
 
 			colortmp = 0;
@@ -137,6 +146,10 @@ void colorExtract() {
 			colortmp = pixel;
 			detColor();
 			tmpArr[x][y] = color;
+
+			printf("%d", tmpArr[x][y]);
+			
+			//matArr_1[x][y] = tmpArr[x][y];
 
 
 			//printf("%d", matArr_1[x][y]);
@@ -146,7 +159,32 @@ void colorExtract() {
 		}
 
 	}
-
+	
+	int z = 0;
+	printf("\n");
+	printf("\n");
+	for (int y = 1; y < 17; y++) {
+		printf("\n");
+		if (y % 2 != 0) {
+			for (int x = 0; x < 16; x++) {
+				z = y - 1;
+				matArr_1[x][z] = tmpArr[x][z];
+				printf("%d", matArr_1[x][z]);
+			}
+		}
+		else {
+			for (int x = 15; x > -1; x--) {
+				z = y - 1;
+				matArr_1[x][z] = tmpArr[x][z];
+				printf("%d", matArr_1[x][z]);
+			}
+		}
+	}
+	
+}
+	
+/*
+int carcMatrix() {
 	int z = 0;
 	for (int y = 1; y < 17; ++y) {
 		if (y % 2 != 0) {
@@ -162,11 +200,8 @@ void colorExtract() {
 			}
 		}
 	}
-	*/
 }
-
-
-
+*/
 
 int main()
 {
@@ -177,24 +212,24 @@ int main()
 	CSerialComm serialComm; //SerialComm 객체 생성
 
 
-	if (!serialComm.connect("COM5")) //COM25번의 포트를 오픈한다. 실패할 경우 -1을 반환한다.
+	if (!serialComm.connect("COM7")) //COM25번의 포트를 오픈한다. 실패할 경우 -1을 반환한다.
 	{
 		cout << "connect faliled" << endl;
 		return -1;
 	}
 	else
 		cout << "connect successed" << endl;
+	colorExtract();
 
 
-
-
+	
 	while (1) {
 
-		//colorExtract();
+		colorExtract();
 
 
 		serialComm.sendCommand('D');
-		delay(10);
+		delay(3);
 
 		for (int x = 0; x < 16; x++) {
 
@@ -207,12 +242,12 @@ int main()
 
 			}
 		}
-		delay(300);
+		delay(1000);
 		if (waitKey(25) >= 0)
 			break;
 
 	}
-
+	
 
 	serialComm.disconnect(); //작업이 끝나면 포트를 닫는다
 
