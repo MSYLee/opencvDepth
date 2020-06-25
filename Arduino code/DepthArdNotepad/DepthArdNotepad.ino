@@ -19,7 +19,7 @@ int colortmp;
 void setup()  {
 
   Serial.begin(115200);
-  Serial.setTimeout(2);
+  Serial.setTimeout(5);
 
 
   pixel_1.begin();
@@ -54,24 +54,20 @@ void loop() {
 void getData() {
   pixel_1.clear();
   pixel_1.show();
- if (Serial.find("D")) {
   for (int x = 0; x < 16; ++x) {
-    if (Serial.find("C")) {
     for (int y = 0; y < 16; ++y) {
-      
+      if (Serial.find("C")) {
         matArr_1[x][y] = Serial.parseInt();
       }
       else {
         matArr_1[x][y] = 6;
       }
-    
+    }
   }
-  
   modetmp = 3;
 }
-}
 
-}
+
 void displayData() {
 
   for (int x = 0; x < 16; x++) {
@@ -101,5 +97,5 @@ void displayData() {
   }
 
   numPixel = 0;
-  modetmp = 2;
+  modetmp = 1;
 }

@@ -145,7 +145,7 @@ int main()
 	CSerialComm serialComm; //SerialComm 객체 생성
 
 
-	if (!serialComm.connect("COM5")) //COM25번의 포트를 오픈한다. 실패할 경우 -1을 반환한다.
+	if (!serialComm.connect("COM6")) //COM25번의 포트를 오픈한다. 실패할 경우 -1을 반환한다.
 	{
 		cout << "connect faliled" << endl;
 		return -1;
@@ -160,48 +160,49 @@ int main()
 
 
 		
-
+		//serialComm.sendCommand('O');
 	serialComm.sendCommand('D');
-	delay(2);
+	delay(10);
 	
 
 	for (int x= 0; x < 16; x++) {
-		serialComm.sendCommand('C');
+		
 		for (int y = 0; y < 16; y++) {
 
 			
 			buffer = matArr_1[x][y];
-			
+			serialComm.sendCommand('C');
 			serialComm.sendCommand(buffer);
 			//delay(1);
 		}
 	}
-	  
+	delay(1000);
 
 
 
-
+	//serialComm.sendCommand('O');
 	serialComm.sendCommand('D');
-	delay(2);
+	delay(10);
 	
 
 	for (int x = 0; x < 16; x++) {
-		serialComm.sendCommand('C');
+		
 		for (int y = 0; y < 16; y++) {
 
 
 			buffer = matArr_2[x][y];
-			
+			serialComm.sendCommand('C');
 			serialComm.sendCommand(buffer);
 			//delay(1);
 		}
 	}
-
+	delay(1000);
 
 	}
 
+	
 
-	serialComm.disconnect(); //작업이 끝나면 포트를 닫는다
+;	serialComm.disconnect(); //작업이 끝나면 포트를 닫는다
 
 	//cout << "end connect" << endl;
 	return 0;
